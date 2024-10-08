@@ -6,10 +6,10 @@ export const getFieldByListId = async (listId: string) => {
     .then(res => res.json())
 }
 
-export const createRow = async (listId: string) => {
+export const createRow = async (listId: string, rows: { fieldId: string, value: unknown }[]) => {
   return fetch(`${host}/api/row`, {
     method: 'POST',
-    body: JSON.stringify({ listId })
+    body: JSON.stringify({ listId, rows })
   }).then(res => res.json())
 }
 

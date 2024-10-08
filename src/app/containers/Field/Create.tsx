@@ -53,7 +53,7 @@ export default function CreateField({ listId }: { listId: string }) {
         })}
       </div>
       <div className="mt-2">
-        <input placeholder="Input option name" onKeyUp={ev => {
+        <input placeholder="Input and hit Enter" onKeyUp={ev => {
           if (ev.key !== 'Enter') { return }
 
           const target = ev.target as HTMLInputElement

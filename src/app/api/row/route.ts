@@ -1,3 +1,4 @@
+import { notifyRowCreated } from "@/libs/pusher-server"
 import { CellModel, ICellWithoutId } from "@/models/Cell"
 import { connectDB } from "@/models/connect"
 import { FieldModel } from "@/models/Field"
@@ -24,8 +25,9 @@ const getFields = async (listId: string) => {
 }
 
 export async function POST(req: Request) {
-  const { listId } = await req.json() as {
-    listId: string
+  const { listId, rows } = await req.json() as {
+    listId: string,
+    rows: { fieldId: string, value: unknown }[]
   }
 
   await connectDB()
@@ -38,7 +40,25 @@ export async function POST(req: Request) {
     createdAt: new Date()
   }) as IRow
 
+  console.log('rows', rows)
+
+
   const cellDatas: ICellWithoutId[] = []
+
+  if (rows && rows.length) {
+    rows.map(r => {
+
+      const fieldObjId = new Types.ObjectId(r.fieldId)
+      console.log('fieldObjectId', fieldObjId)
+      cellDatas.push({
+        value: r.value || null,
+        rowId: row._id,
+        fieldId: fieldObjId
+      })
+    })
+  }
+
+  console.log('cellDatas', cellDatas)
 
   fields.map(field => {
     cellDatas.push({
@@ -49,6 +69,8 @@ export async function POST(req: Request) {
   })
 
   const cells = await CellModel.insertMany(cellDatas)
+
+  notifyRowCreated(row.listId.toString())
 
   return Response.json({
     row,

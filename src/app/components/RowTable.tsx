@@ -7,15 +7,16 @@ import NoCellInput from "./CustomInput/NoCellInput"
 export default function RowTable({ listId }: { listId: string }) {
   const { fieldList } = useFieldList(listId)
   const [rows] = useRowState()
-
-  console.log(rows)
   const sortedFieldList = fieldList.sort((a, b) => a.order - b.order)
+
+  console.log('sortedFieldList', sortedFieldList)
 
   return <div>
     <table>
       <thead>
         <tr>
           <td>#</td>
+          <td>ID</td>
           {sortedFieldList.map(f => {
             return <td key={f._id.toString()}>{f.name}</td>
           })}
@@ -27,6 +28,7 @@ export default function RowTable({ listId }: { listId: string }) {
           const rowId = row._id.toString()
           return <tr key={rowId}>
             <td className="text-center text-sm">{index + 1}</td>
+            <td>{rowId}</td>
             {sortedFieldList.map(f => {
               const cell = row.cells.find(cell => cell.fieldId === f._id)
 
